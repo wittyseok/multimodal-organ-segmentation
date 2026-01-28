@@ -1,0 +1,149 @@
+# ==========================
+# Python
+# ==========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ==========================
+# Virtual Environments
+# ==========================
+venv/
+ENV/
+env/
+.venv/
+
+# ==========================
+# IDE / Editor
+# ==========================
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# ==========================
+# Jupyter Notebook
+# ==========================
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ==========================
+# Data & Outputs (Large Files)
+# ==========================
+# Raw data
+data/CT/
+data/PET/
+data/MRI/
+data/US/
+data/raw/
+data/processed/
+
+# Model checkpoints
+outputs/
+experiments/
+checkpoints/
+*.pth
+*.pt
+*.ckpt
+*.h5
+*.hdf5
+*.onnx
+
+# Logs
+logs/
+*.log
+tensorboard_logs/
+
+# Analysis outputs
+reports/
+Summary/
+
+# ==========================
+# Medical Imaging Artifacts
+# ==========================
+# DICOM files
+*.dcm
+*.DCM
+
+# NIfTI files (large)
+*.nii
+*.nii.gz
+
+# Registration outputs
+TransformParameters*.txt
+elastix.log
+transformix.log
+
+# ==========================
+# Legacy Outputs (from old pipeline)
+# ==========================
+CT_for_Network/
+CT_for_PET/
+PET_nii_learn/
+PET_nii_temp/
+SUV_TMTV_processing/
+SUV_organs_histogram/
+Tumor_contour_baseonSUV/
+automatic_PETimage_processing/
+calculate_SUV/
+reg_data/
+registration/
+segmentation_output/
+segmentation_png/
+sample_output/
+data_lymphoma_liver/
+
+# ==========================
+# OS Generated
+# ==========================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ==========================
+# Secrets & Config
+# ==========================
+.env
+.env.local
+*.pem
+secrets.yaml
+credentials.json
+
+# ==========================
+# Misc
+# ==========================
+*.bak
+*.tmp
+*.temp
+.cache/
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/

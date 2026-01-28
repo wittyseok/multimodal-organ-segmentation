@@ -1,0 +1,174 @@
+# Default Configuration for Multi-Modal Medical Image Segmentation
+
+# Experiment settings
+experiment:
+  name: "multi_organ_segmentation"
+  seed: 42
+  output_dir: "outputs"
+  log_dir: "logs"
+
+# Data settings
+data:
+  # Supported modalities: CT, PET, MRI, US (ultrasound)
+  modalities: ["CT", "PET"]
+  primary_modality: "CT"  # Reference modality for registration
+
+  # Paths
+  data_root: "./data"
+  train_csv: "train.csv"
+  val_csv: "val.csv"
+  test_csv: "test.csv"
+
+  # Preprocessing
+  preprocessing:
+    # CT specific
+    ct:
+      window_center: -100
+      window_width: 700
+      normalize: true
+      target_spacing: [1.5, 1.5, 2.0]
+
+    # PET specific
+    pet:
+      suv_type: "bw"  # bw, bsa, lbm_james, lbm_jan
+      normalize: true
+      target_spacing: [1.5, 1.5, 2.0]
+
+    # MRI specific (for future use)
+    mri:
+      normalize: true
+      target_spacing: [1.0, 1.0, 1.0]
+
+    # Ultrasound specific (for future use)
+    us:
+      normalize: true
+
+  # Registration
+  registration:
+    enabled: true
+    method: "translation"  # translation, rigid, affine, deformable
+    metric: "mattes_mutual_information"
+
+  # Augmentation
+  augmentation:
+    enabled: true
+    random_flip: true
+    random_rotate: 15  # degrees
+    random_scale: [0.9, 1.1]
+    random_intensity: 0.1
+
+# Model settings
+model:
+  name: "swin_unetr"  # swin_unetr, unet, attention_unet, dual_encoder
+
+  # Input/Output
+  in_channels: 2  # Number of modalities
+  out_channels: 8  # Number of segmentation classes
+
+  # Architecture specific
+  backbone:
+    name: "swin_transformer"
+    img_size: [96, 96, 96]
+    feature_size: 48
+    depths: [2, 2, 2, 2]
+    num_heads: [3, 6, 12, 24]
+
+  # Multi-modal fusion
+  fusion:
+    type: "late"  # early, late, attention, cross_attention
+    fusion_level: "encoder"  # encoder, decoder, both
+
+  # Segmentation head
+  head:
+    type: "conv"  # conv, attention
+    dropout: 0.1
+
+# Training settings
+training:
+  mode: "train"  # train, eval, inference
+
+  # Optimization
+  epochs: 300
+  batch_size: 2
+  accumulation_steps: 4  # Gradient accumulation
+
+  optimizer:
+    name: "adamw"
+    lr: 1.0e-4
+    weight_decay: 1.0e-5
+    betas: [0.9, 0.999]
+
+  scheduler:
+    name: "cosine"  # cosine, step, plateau
+    warmup_epochs: 10
+    min_lr: 1.0e-6
+
+  # Loss
+  loss:
+    name: "dice_ce"  # dice, ce, dice_ce, focal, tversky
+    dice_weight: 0.5
+    ce_weight: 0.5
+    class_weights: null  # Optional per-class weights
+
+  # Early stopping
+  early_stopping:
+    enabled: true
+    patience: 30
+    metric: "val_dice"
+    mode: "max"
+
+  # Checkpointing
+  checkpoint:
+    save_best: true
+    save_last: true
+    save_every: 10
+
+# Inference settings
+inference:
+  sliding_window:
+    roi_size: [96, 96, 96]
+    overlap: 0.5
+    mode: "gaussian"
+  batch_size: 4
+  tta: false  # Test-time augmentation
+
+# Analysis settings
+analysis:
+  suv:
+    enabled: true
+    methods: ["bw", "bsa", "lbm_james", "lbm_jan"]
+  tmtv:
+    enabled: true
+    absolute_threshold: 2.5
+    percentage_threshold: 0.4
+  histogram:
+    enabled: true
+    bins: 100
+
+# Explainability settings
+explainability:
+  gradcam:
+    enabled: true
+    target_layers: ["encoder.layer4"]
+  attention_maps:
+    enabled: true
+  tsne:
+    enabled: false
+    perplexity: 30
+    n_components: 2
+  shap:
+    enabled: false
+    n_samples: 100
+
+# Distributed training
+distributed:
+  enabled: false
+  backend: "nccl"
+  world_size: 1
+
+# Hardware
+hardware:
+  device: "cuda"
+  num_workers: 4
+  pin_memory: true
+  mixed_precision: true
